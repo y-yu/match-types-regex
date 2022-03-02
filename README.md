@@ -11,8 +11,8 @@ Simple compile-time Regular Expression matcher of [Scala 3 Match Types](https://
 def a9: Match[
   Star[
     Alt[
-      Alphabet["a"],
-      Alphabet["b"]
+      Lit["a"],
+      Lit["b"]
     ]
   ], "abaaabaabbaa"
 ] = true
@@ -20,14 +20,23 @@ def a9: Match[
 def a10: Match[
   Star[
     Alt[
-      Alphabet["a"],
-      Alphabet["b"]
+      Lit["a"],
+      Lit["b"]
     ]
   ], "abaaabaabbaa!"
 ] = false
+
+def a17: Match[
+  Con[
+    Star[Dot],
+    Con[
+      Con[Lit["a"], Con[Lit["b"], Lit["c"]]],
+      Star[Dot]
+    ]
+  ], "auaoeuaoeu__abc__khaoukrsao"] = true
 ```
 
-See also [MatchTypesRegex.scala](https://github.com/y-yu/match-types-regex/blob/master/src/main/scala/matchtypesregex/MatchTypesRegex.scala).
+See also [Main.scala](https://github.com/y-yu/match-types-regex/blob/master/src/main/scala/Main.scala) for more examples.
 
 ## References
 

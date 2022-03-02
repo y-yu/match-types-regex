@@ -14,11 +14,14 @@ sealed trait Regex
 
 // Stringだけど1文字しか入れたらダメ
 // 1 length string only!
-sealed trait Alphabet[A <: String] extends Regex
+sealed trait Lit[A <: String] extends Regex
+sealed trait Dot extends Regex
+case object Dot extends Dot
 sealed trait Star[A <: Regex] extends Regex
 sealed trait Alt[A <: Regex, B <: Regex] extends Regex
 sealed trait Con[A <: Regex, B <: Regex] extends Regex
 sealed trait Epsilon extends Regex
+case object Epsilon extends Epsilon
 sealed trait Void extends Regex
 
 @annotation.experimental
@@ -55,23 +58,22 @@ object MatchTypesRegex {
 
   type CanEmpty[In <: Regex] <: Boolean =
     In match
-      case Epsilon => true
-      case Alphabet[_] => false
+      case Epsilon | Star[_] => true
+      case Lit[_] | Dot | Void => false
       case Alt[r1, r2] =>
         boolean.||[CanEmpty[r1], CanEmpty[r2]]
       case Con[r1, r2] =>
         boolean.&&[CanEmpty[r1], CanEmpty[r2]]
-      case Star[r] => true
-      case Void => false
 
   type Derivative[In <: Regex, Char <: String] <: Regex =
     (In, Char) match
       case (Void, _) => Void
       case (Epsilon, _) => Void
-      case (Alphabet[a], _) =>
+      case (Lit[a], _) =>
         any.==[a, Char] match
           case true => Epsilon
           case false => Void
+      case (Dot, x) => Epsilon
       case (Alt[r1, r2], _) =>
         Alt[Derivative[r1, Char], Derivative[r2, Char]]
       case (Con[r1, r2], _) =>
@@ -87,44 +89,6 @@ object MatchTypesRegex {
       case x :+: xs =>
         MatchHList[Derivative[In, x], xs]
 
-
   type Match[In <: Regex, A <: String] =
     MatchHList[In, StringToHList[A]]
-
-  def a1: ReverseStr["abc"] =
-    "cba"
-
-  def a2: StringToHList["123"] =
-    ( ??? : ("1" :+: "2" :+: "3" :+: HNil) )
-
-  def a3: CanEmpty[Epsilon] =
-    true
-
-  def a4: Derivative[Alphabet["a"], "a"] = new Epsilon {}
-
-  def a5: Match[Alphabet["a"], "a"] = true
-
-  def a7: CanEmpty[Con[Epsilon, Alphabet["a"]]] = false
-
-  def a8: Match[
-    Con[
-      Alphabet["a"],
-      Alphabet["b"]
-    ], "ab"] = true
-
-  def a9: Match[
-    Star[
-      Alt[
-        Alphabet["a"],
-        Alphabet["b"]
-      ]
-    ], "abaaabaabbaa"] = true
-
-  def a10: Match[
-    Star[
-      Alt[
-        Alphabet["a"],
-        Alphabet["b"]
-      ]
-    ], "abaaabaabbaa!"] = false
 }
