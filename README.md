@@ -28,3 +28,7 @@ def a10: Match[
 ```
 
 See also [MatchTypesRegex.scala](https://github.com/y-yu/match-types-regex/blob/master/src/main/scala/matchtypesregex/MatchTypesRegex.scala).
+
+## References
+
+- [MatchTypeParseEval.scala](https://gist.github.com/xuwei-k/521638aa17ebc839c8d8519bcdfdc7ae) by [@xuwei-k](https://gist.github.com/xuwei-k)
