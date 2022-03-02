@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-test:
+    strategy:
+      matrix:
+        java-version: [ 11 ]
+        os: [ macos-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java ${{ matrix.java-version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+
+      - name: Setup coursier cache
+        uses: coursier/cache-action@v4.1
+
+      - name: Compile
+        run: ./sbt compile
