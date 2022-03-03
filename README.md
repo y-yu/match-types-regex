@@ -8,35 +8,33 @@ Simple compile-time Regular Expression matcher of [Scala 3 Match Types](https://
 ## Example
 
 ```scala
-def a9: Match[
-  Star[
-    Alt[
-      Lit["a"],
-      Lit["b"]
-    ]
-  ], "abaaabaabbaa"
-] = true
+summon[
+  Match[
+    AST[".*abc.*"],
+    "auaoeuaoeu__abc__khaoukrsao"
+  ] =:= true
+]
 
-def a10: Match[
-  Star[
+summon[
+  AST[
+    "(ab(c|d)|e*)*"
+  ] =:= Star[
     Alt[
-      Lit["a"],
-      Lit["b"]
+      Con[
+        Con[
+          Lit["a"], Lit["b"]
+        ],
+        Alt[
+          Lit["c"], Lit["d"]
+        ]
+      ],
+      Star[Lit["e"]]
     ]
-  ], "abaaabaabbaa!"
-] = false
-
-def a17: Match[
-  Con[
-    Star[Dot],
-    Con[
-      Con[Lit["a"], Con[Lit["b"], Lit["c"]]],
-      Star[Dot]
-    ]
-  ], "auaoeuaoeu__abc__khaoukrsao"] = true
+  ]
+]
 ```
 
-See also [Main.scala](https://github.com/y-yu/match-types-regex/blob/master/src/main/scala/Main.scala) for more examples.
+See also [EvalTest.scala](https://github.com/y-yu/match-types-regex/blob/master/src/test/scala/matchtypesregex/EvalTest.scala) for more examples.
 
 ## References
 
