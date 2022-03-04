@@ -26,3 +26,6 @@ jobs:
 
       - name: Compile
         run: ./sbt "Test / compile"
+
+      - name: Run test
+        run: ./sbt test

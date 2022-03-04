@@ -1,8 +1,9 @@
 package matchtypesregex
 
-import MatchTypesRegex.*
+import matchtypesregex.MatchTypesRegex.*
+import org.scalatest.flatspec.AnyFlatSpec
 
-object EvalTest {
+class EvalTest extends AnyFlatSpec {
   summon[
     CanEmpty[Epsilon] =:= true
   ]
@@ -146,4 +147,18 @@ object EvalTest {
       "abceeeeeeee"
     ] =:= true
   ]
+
+  "Match[(ab(c|d)|e*)*]" should "doesn't compile if given string is `ddddddddd`" in {
+    assertDoesNotCompile(
+      """summon[
+        |  Match[
+        |    AST[
+        |      "(ab(c|d)|e*)*"
+        |    ],
+        |    "abceeeeeeee"
+        |  ] =:= false
+        |]
+        |""".stripMargin
+    )
+  }
 }
