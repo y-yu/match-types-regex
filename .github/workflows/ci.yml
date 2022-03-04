@@ -25,4 +25,4 @@ jobs:
         uses: coursier/cache-action@v4.1
 
       - name: Compile
-        run: ./sbt compile
+        run: ./sbt "Test / compile"
