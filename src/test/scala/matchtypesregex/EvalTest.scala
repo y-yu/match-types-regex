@@ -3,6 +3,7 @@ package matchtypesregex
 import matchtypesregex.MatchTypesRegex.*
 import org.scalatest.flatspec.AnyFlatSpec
 
+@annotation.experimental
 class EvalTest extends AnyFlatSpec {
   summon[
     CanEmpty[Epsilon] =:= true
@@ -145,6 +146,24 @@ class EvalTest extends AnyFlatSpec {
         "(ab(c|d)|e*)*"
       ],
       "abceeeeeeee"
+    ] =:= true
+  ]
+
+  summon[
+    Match[
+      AST[
+        "(ab(c|.)|e*)*"
+      ],
+      "ab8eeeeabee"
+    ] =:= true
+  ]
+
+  summon[
+    Match[
+      AST[
+        "\\.*"
+      ],
+      "....."
     ] =:= true
   ]
 

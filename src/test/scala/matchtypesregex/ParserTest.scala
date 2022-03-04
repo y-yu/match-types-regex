@@ -2,7 +2,32 @@ package matchtypesregex
 
 import matchtypesregex.MatchTypesRegex.*
 
+@annotation.experimental
 object ParserTest {
+  summon[
+    HListToTokens[
+      StringToHList["\\.\\(\\)\\|\\\\"]
+    ] =:= (
+      Lit["."] :+:
+        Lit["("] :+:
+        Lit[")"] :+:
+        Lit["|"] :+:
+        Lit["\\"] :+:
+        HNil
+    )
+  ]
+
+  summon[
+    HListToTokens[
+      StringToHList["a\\.b"]
+    ] =:= (
+      Lit["a"] :+:
+        Lit["."] :+:
+        Lit["b"] :+:
+        HNil
+      )
+  ]
+
   summon[
     ShuntingYard[
       Start :+:

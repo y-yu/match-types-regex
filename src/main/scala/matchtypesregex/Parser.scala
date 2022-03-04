@@ -55,12 +55,20 @@ trait Parser { self: HListUtil =>
         RPN0[Alt[x2, x1] :+: xs, ys]
       case (x1 :+: x2 :+: xs, Plus :+: ys) =>
         RPN0[Con[x2, x1] :+: xs, ys]
-      case (x :+: xs, Plus :+: ys) =>
-        RPN0[Con[x, Epsilon] :+: xs, ys]
       case (xs, y :+: ys) =>
         RPN0[y :+: xs, ys]
 
-  type StrToToken[A <: String] =
+  type StrToEscapedToken[A <: String] <: Token =
+    A match
+      case "*" => Lit["*"]
+      case "." => Lit["."]
+      case "|" => Lit["|"]
+      case "(" => Lit["("]
+      case ")" => Lit[")"]
+      case "\\" => Lit["\\"]
+      case _ => Lit[A]
+
+  type StrToToken[A <: String] <: Token =
     A match
       case "*" => Asta
       case "." => Dot
@@ -71,6 +79,12 @@ trait Parser { self: HListUtil =>
 
   type HListToTokens[A <: HList] <: HList =
     A match
+      case x1 :+: x2 :+: xs =>
+        x1 match
+          case "\\" =>
+            StrToEscapedToken[x2] :+: HListToTokens[xs]
+          case _ =>
+            StrToToken[x1] :+: HListToTokens[x2 :+: xs]
       case x :+: xs =>
         StrToToken[x] :+: HListToTokens[xs]
       case HNil =>
