@@ -7,5 +7,5 @@ ThisBuild / scalaVersion := "3.1.2-RC1"
 lazy val root = (project in file("."))
   .settings(
     name := "MatchTypesRegex",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.11" % "test"
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.16" % "test"
   )
